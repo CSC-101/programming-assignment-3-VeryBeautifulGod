@@ -1,7 +1,8 @@
 import data
+from data import CountyDemographics
 import build_data
 import unittest
-
+import hw3
 
 # These two values are defined to support testing below. The
 # data within these structures should not be modified. Doing
@@ -180,28 +181,482 @@ class TestCases(unittest.TestCase):
 
     # Part 1
     # test population_total
+    def test_population_total_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"High School": 80.0, "Bachelor's": 15.0, "Graduate": 5.0},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Median": 50000, "Per Capita": 25000},
+                population={"2014": 50000},
+                state="Sample State"
+            )
+        ]
+        expected = 50000
+        actual = hw3.population_total(county_list)
+        self.assertEqual(expected, actual)
+
+    def test_population_total_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"High School": 85.0, "Bachelor's": 10.0, "Graduate": 5.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Median": 45000, "Per Capita": 22000},
+                population={"2014": 30000},
+                state="State A"
+            ),
+            CountyDemographics(
+                age={"0-18": 22.0, "18-65": 60.0, "65+": 18.0},
+                county="County B",
+                education={"High School": 90.0, "Bachelor's": 7.0, "Graduate": 3.0},
+                ethnicities={"White": 65.0, "Black": 20.0, "Asian": 5.0, "Hispanic": 10.0},
+                income={"Median": 48000, "Per Capita": 23000},
+                population={"2014": 45000},
+                state="State B"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County C",
+                education={"High School": 75.0, "Bachelor's": 20.0, "Graduate": 5.0},
+                ethnicities={"White": 50.0, "Black": 25.0, "Asian": 15.0, "Hispanic": 10.0},
+                income={"Median": 52000, "Per Capita": 27000},
+                population={"2014": 25000},
+                state="State C"
+            )
+        ]
+        expected = 100000
+        actual = hw3.population_total(county_list)
+        self.assertEqual(expected, actual)
 
     # Part 2
     # test filter_by_state
+    def test_filter_by_state_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"High School": 80.0, "Bachelor's": 15.0, "Graduate": 5.0},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Median": 50000, "Per Capita": 25000},
+                population={"2014": 50000},
+                state="CA"
+            )
+        ]
+        expected = county_list
+        actual = hw3.filter_by_state(county_list, "CA")
+        self.assertEqual(expected, actual)
 
+    def test_filter_by_state_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"High School": 85.0, "Bachelor's": 10.0, "Graduate": 5.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Median": 45000, "Per Capita": 22000},
+                population={"2014": 30000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 22.0, "18-65": 60.0, "65+": 18.0},
+                county="County B",
+                education={"High School": 90.0, "Bachelor's": 7.0, "Graduate": 3.0},
+                ethnicities={"White": 65.0, "Black": 20.0, "Asian": 5.0, "Hispanic": 10.0},
+                income={"Median": 48000, "Per Capita": 23000},
+                population={"2014": 45000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County C",
+                education={"High School": 75.0, "Bachelor's": 20.0, "Graduate": 5.0},
+                ethnicities={"White": 50.0, "Black": 25.0, "Asian": 15.0, "Hispanic": 10.0},
+                income={"Median": 52000, "Per Capita": 27000},
+                population={"2014": 25000},
+                state="NV"
+            )
+        ]
+        expected = [
+            county_list[0],
+            county_list[1]
+        ]
+        actual = hw3.filter_by_state(county_list, "CA")
+        self.assertEqual(expected, actual)
     # Part 3
     # test population_by_education
+    def test_population_by_education_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        education_key = "Bachelor's Degree or Higher"
+        expected = 87911.145
+        actual = hw3.population_by_education(county_list, education_key)
+        self.assertEqual(expected, actual)
+
+    def test_population_by_education_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        education_key = "Bachelor's Degree or Higher"
+        expected = (50000 * 0.40) + (70000 * 0.35)
+        actual = hw3.population_by_education(county_list, education_key)
+        self.assertEqual(expected, actual)
+
     # test population_by_ethnicity
+    def test_population_by_ethnicity_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        ethnicity_key = "Asian"
+        expected = 279083 * 0.10
+        actual = hw3.population_by_ethnicity(county_list, ethnicity_key)
+        self.assertEqual(expected, actual)
+
+    def test_population_by_ethnicity_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        ethnicity_key = "Asian"
+        expected = (50000 * 0.10) + (70000 * 0.15)
+        actual = hw3.population_by_ethnicity(county_list, ethnicity_key)
+        self.assertEqual(expected, actual)
+
     # test population_below_poverty_level
+    def test_population_below_poverty_level_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        expected = 279083 * 0.15
+        actual = hw3.population_below_poverty_level(county_list)
+        self.assertEqual(expected, actual)
+
+    def test_population_below_poverty_level_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        expected = (50000 * 0.12) + (70000 * 0.10)
+        actual = hw3.population_below_poverty_level(county_list)
+        self.assertEqual(expected, actual)
 
     # Part 4
     # test percent_by_education
+    def test_percent_by_education_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        education_key = "Bachelor's Degree or Higher"
+        expected = 31.5
+        actual = hw3.percent_by_education(county_list, education_key)
+        self.assertEqual(expected, actual)
+
+    def test_percent_by_education_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        education_key = "Bachelor's Degree or Higher"
+        total_population = 50000 + 70000
+        total_education_population = (50000 * 0.40) + (70000 * 0.35)
+        expected = (total_education_population / total_population) * 100
+        actual = hw3.percent_by_education(county_list, education_key)
+        self.assertEqual(expected, actual)
+
     # test percent_by_ethnicity
+    def test_percent_by_ethnicity_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        ethnicity_key = "Asian"
+        expected = 10.0
+        actual = hw3.percent_by_ethnicity(county_list, ethnicity_key)
+        self.assertEqual(expected, actual)
+
+    def test_percent_by_ethnicity_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 60.0, "Black": 20.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        ethnicity_key = "Asian"
+        total_population = 50000 + 70000
+        total_ethnicity_population = (50000 * 0.10) + (70000 * 0.15)
+        expected = (total_ethnicity_population / total_population) * 100
+        actual = hw3.percent_by_ethnicity(county_list, ethnicity_key)
+        self.assertEqual(expected, actual)
+
     # test percent_below_poverty_level
+    def test_percent_below_poverty_level_single_county(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 20.0, "18-65": 50.0, "65+": 30.0},
+                county="Sample County",
+                education={"Bachelor's Degree or Higher": 31.5},
+                ethnicities={"White": 60.0, "Black": 20.0},
+                income={"Persons Below Poverty Level": 15.0},
+                population={"2014": 279083},
+                state="CA"
+            )
+        ]
+        expected = 15.0
+        actual = hw3.percent_below_poverty_level(county_list)
+        self.assertEqual(expected, actual)
+
+    def test_percent_below_poverty_level_multiple_counties(self):
+        county_list = [
+            CountyDemographics(
+                age={"0-18": 25.0, "18-65": 55.0, "65+": 20.0},
+                county="County A",
+                education={"Bachelor's Degree or Higher": 40.0},
+                ethnicities={"White": 70.0, "Black": 10.0, "Asian": 10.0, "Hispanic": 10.0},
+                income={"Persons Below Poverty Level": 12.0},
+                population={"2014": 50000},
+                state="CA"
+            ),
+            CountyDemographics(
+                age={"0-18": 30.0, "18-65": 50.0, "65+": 20.0},
+                county="County B",
+                education={"Bachelor's Degree or Higher": 35.0},
+                ethnicities={"White": 50.0, "Black": 20.0, "Asian": 15.0, "Hispanic": 15.0},
+                income={"Persons Below Poverty Level": 10.0},
+                population={"2014": 70000},
+                state="CA"
+            )
+        ]
+        total_population = 50000 + 70000
+        total_poverty_population = (50000 * 0.12) + (70000 * 0.10)
+        expected = (total_poverty_population / total_population) * 100
+        actual = hw3.percent_below_poverty_level(county_list)
+        self.assertEqual(expected, actual)
 
     # Part 5
     # test education_greater_than
-    # test education_less_than
-    # test ethnicity_greater_than
-    # test ethnicity_less_than
-    # test below_poverty_level_greater_than
-    # test below_poverty_level_less_than
+    def test_education_greater_than_1(self):
+        county1 = CountyDemographics({}, "County1", {"Bachelor's Degree or Higher": 65}, {}, {}, {}, "CA")
+        county2 = CountyDemographics({}, "County2", {"Bachelor's Degree or Higher": 45}, {}, {}, {}, "CA")
+        county_list = [county1, county2]
+        result = hw3.education_greater_than(county_list, "Bachelor's Degree or Higher", 50)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
 
+    def test_education_greater_than_2(self):
+        county1 = CountyDemographics({}, "County1", {"Bachelor's Degree or Higher": 55}, {}, {}, {}, "TX")
+        county2 = CountyDemographics({}, "County2", {"Bachelor's Degree or Higher": 40}, {}, {}, {}, "TX")
+        county_list = [county1, county2]
+        result = hw3.education_greater_than(county_list, "Bachelor's Degree or Higher", 50)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    # test education_less_than
+    def test_education_less_than_1(self):
+        county1 = CountyDemographics({}, "County1", {"Bachelor's Degree or Higher": 45}, {}, {}, {}, "NY")
+        county2 = CountyDemographics({}, "County2", {"Bachelor's Degree or Higher": 60}, {}, {}, {}, "NY")
+        county_list = [county1, county2]
+        result = hw3.education_less_than(county_list, "Bachelor's Degree or Higher", 50)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    def test_education_less_than_2(self):
+        county1 = CountyDemographics({}, "County1", {"Bachelor's Degree or Higher": 40}, {}, {}, {}, "FL")
+        county2 = CountyDemographics({}, "County2", {"Bachelor's Degree or Higher": 35}, {}, {}, {}, "FL")
+        county_list = [county1, county2]
+        result = hw3.education_less_than(county_list, "Bachelor's Degree or Higher", 45)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].county, "County1")
+        self.assertEqual(result[1].county, "County2")
+
+    # test ethnicity_greater_than
+    def test_ethnicity_greater_than_1(self):
+        county1 = CountyDemographics({}, "County1", {}, {"Hispanic or Latino": 25}, {}, {}, "NV")
+        county2 = CountyDemographics({}, "County2", {}, {"Hispanic or Latino": 15}, {}, {}, "NV")
+        county_list = [county1, county2]
+        result = hw3.ethnicity_greater_than(county_list, "Hispanic or Latino", 20)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    def test_ethnicity_greater_than_2(self):
+        county1 = CountyDemographics({}, "County1", {}, {"Hispanic or Latino": 30}, {}, {}, "TX")
+        county2 = CountyDemographics({}, "County2", {}, {"Hispanic or Latino": 40}, {}, {}, "TX")
+        county_list = [county1, county2]
+        result = hw3.ethnicity_greater_than(county_list, "Hispanic or Latino", 35)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County2")
+
+    # test ethnicity_less_than
+    def test_ethnicity_less_than_1(self):
+        county1 = CountyDemographics({}, "County1", {}, {"Black or African American": 15}, {}, {}, "GA")
+        county2 = CountyDemographics({}, "County2", {}, {"Black or African American": 25}, {}, {}, "GA")
+        county_list = [county1, county2]
+        result = hw3.ethnicity_less_than(county_list, "Black or African American", 20)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    def test_ethnicity_less_than_2(self):
+        county1 = CountyDemographics({}, "County1", {}, {"White": 65}, {}, {}, "OH")
+        county2 = CountyDemographics({}, "County2", {}, {"White": 55}, {}, {}, "OH")
+        county_list = [county1, county2]
+        result = hw3.ethnicity_less_than(county_list, "White", 60)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County2")
+
+    # test below_poverty_level_greater_than
+    def test_below_poverty_level_greater_than_1(self):
+        county1 = CountyDemographics({}, "County1", {}, {}, {"Persons Below Poverty Level": 12}, {}, "LA")
+        county2 = CountyDemographics({}, "County2", {}, {}, {"Persons Below Poverty Level": 10}, {}, "LA")
+        county_list = [county1, county2]
+        result = hw3.below_poverty_level_greater_than(county_list, 11)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    def test_below_poverty_level_greater_than_2(self):
+        county1 = CountyDemographics({}, "County1", {}, {}, {"Persons Below Poverty Level": 8}, {}, "IL")
+        county2 = CountyDemographics({}, "County2", {}, {}, {"Persons Below Poverty Level": 12}, {}, "IL")
+        county_list = [county1, county2]
+        result = hw3.below_poverty_level_greater_than(county_list, 10)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County2")
+
+    # test below_poverty_level_less_than
+    def test_below_poverty_level_less_than_1(self):
+        county1 = CountyDemographics({}, "County1", {}, {}, {"Persons Below Poverty Level": 8}, {}, "NJ")
+        county2 = CountyDemographics({}, "County2", {}, {}, {"Persons Below Poverty Level": 12}, {}, "NJ")
+        county_list = [county1, county2]
+        result = hw3.below_poverty_level_less_than(county_list, 10)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].county, "County1")
+
+    def test_below_poverty_level_less_than_2(self):
+        county1 = CountyDemographics({}, "County1", {}, {}, {"Persons Below Poverty Level": 5}, {}, "CO")
+        county2 = CountyDemographics({}, "County2", {}, {}, {"Persons Below Poverty Level": 3}, {}, "CO")
+        county_list = [county1, county2]
+        result = hw3.below_poverty_level_less_than(county_list, 7)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].county, "County1")
+        self.assertEqual(result[1].county, "County2")
 
 
 if __name__ == '__main__':
